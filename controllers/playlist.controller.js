@@ -20,11 +20,11 @@ export const getPlaylists = async (req, res) => {
 // @access  Private
 export const getMyPlaylists = async (req, res) => {
   try {
-    const playlists = await Playlist.find({ user: req.user._id })
-      .populate('songs', 'title artist cover');
-    res.json(playlists);
+    const playlists = await Playlist.find({ user: req.user.id })
+      .populate('user', 'username avatar');
+    res.json({ success: true, playlists });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -32,19 +32,19 @@ export const getMyPlaylists = async (req, res) => {
 // @route   POST /api/playlists
 // @access  Private
 export const createPlaylist = async (req, res) => {
-  const { name, description, isPublic } = req.body;
+  const { name, description, isPublic, songs } = req.body;
 
   try {
     const playlist = new Playlist({
       name,
       description,
       isPublic: isPublic || true,
-      user: req.user._id,
-      songs: []
+      user: req.user.id,
+      songs: songs || []
     });
 
     const createdPlaylist = await playlist.save();
-    res.status(201).json(createdPlaylist);
+    res.status(201).json({ success: true, playlist: createdPlaylist });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -56,15 +56,14 @@ export const createPlaylist = async (req, res) => {
 export const getPlaylistById = async (req, res) => {
   try {
     const playlist = await Playlist.findById(req.params.id)
-      .populate('user', 'username avatar')
-      .populate('songs', 'title artist cover');
+      .populate('user', 'username avatar');
 
     if (!playlist) {
       return res.status(404).json({ message: 'Playlist not found' });
     }
 
     // Check if playlist is private and user is not the owner
-    if (!playlist.isPublic && playlist.user._id.toString() !== req.user?._id?.toString()) {
+    if (!playlist.isPublic && playlist.user._id.toString() !== req.user?.id?.toString()) {
       return res.status(403).json({ message: 'Not authorized to access this playlist' });
     }
 
@@ -88,7 +87,7 @@ export const updatePlaylist = async (req, res) => {
     }
 
     // Check if user is the owner
-    if (playlist.user.toString() !== req.user._id.toString()) {
+    if (playlist.user.toString() !== req.user.id.toString()) {
       return res.status(403).json({ message: 'Not authorized to update this playlist' });
     }
 
@@ -101,7 +100,7 @@ export const updatePlaylist = async (req, res) => {
     }
 
     const updatedPlaylist = await playlist.save();
-    res.json(updatedPlaylist);
+    res.json({ success: true, playlist: updatedPlaylist });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -119,12 +118,12 @@ export const deletePlaylist = async (req, res) => {
     }
 
     // Check if user is the owner
-    if (playlist.user.toString() !== req.user._id.toString()) {
+    if (playlist.user.toString() !== req.user.id.toString()) {
       return res.status(403).json({ message: 'Not authorized to delete this playlist' });
     }
 
-    await playlist.remove();
-    res.json({ message: 'Playlist removed' });
+    await playlist.deleteOne();
+    res.json({ success: true, message: 'Playlist removed' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -144,7 +143,7 @@ export const addSongToPlaylist = async (req, res) => {
     }
 
     // Check if user is the owner
-    if (playlist.user.toString() !== req.user._id.toString()) {
+    if (playlist.user.toString() !== req.user.id.toString()) {
       return res.status(403).json({ message: 'Not authorized to modify this playlist' });
     }
 
@@ -155,7 +154,7 @@ export const addSongToPlaylist = async (req, res) => {
 
     playlist.songs.push(songId);
     const updatedPlaylist = await playlist.save();
-    res.json(updatedPlaylist);
+    res.json({ success: true, playlist: updatedPlaylist });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -173,7 +172,7 @@ export const removeSongFromPlaylist = async (req, res) => {
     }
 
     // Check if user is the owner
-    if (playlist.user.toString() !== req.user._id.toString()) {
+    if (playlist.user.toString() !== req.user.id.toString()) {
       return res.status(403).json({ message: 'Not authorized to modify this playlist' });
     }
 
@@ -182,7 +181,7 @@ export const removeSongFromPlaylist = async (req, res) => {
     );
 
     const updatedPlaylist = await playlist.save();
-    res.json(updatedPlaylist);
+    res.json({ success: true, playlist: updatedPlaylist });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

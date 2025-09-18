@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const playlistSchema = new mongoose.Schema({
   name: { type: String, required: true },
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  songs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song' }],
+  songs: [{ type: String }], // Store song IDs as strings to match frontend data
   cover: { type: String },
   description: { type: String },
   isPublic: { type: Boolean, default: true },

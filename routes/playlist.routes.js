@@ -16,11 +16,15 @@ const router = express.Router();
 
 // Public routes
 router.get('/', getPlaylists);
+
+// Protected routes (specific routes first)
+router.get('/my', protect, getMyPlaylists);
+
+// Public routes (dynamic routes last)
 router.get('/:id', getPlaylistById);
 
-// Protected routes
+// Other protected routes
 router.use(protect);
-router.get('/my/playlists', getMyPlaylists);
 router.post('/', createPlaylist);
 router.put('/:id', updatePlaylist);
 router.delete('/:id', deletePlaylist);
