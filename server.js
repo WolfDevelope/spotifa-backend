@@ -55,6 +55,7 @@ import artistRoutes from './routes/artist.routes.js';
 import playlistRoutes from './routes/playlist.routes.js';
 import userRoutes from './routes/user.routes.js';
 import musicRoutes from './routes/music.js';
+import adminRoutes from './routes/admin.routes.js';
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -64,6 +65,39 @@ app.use('/api/artists', artistRoutes);
 app.use('/api/playlists', playlistRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/music', musicRoutes);
+app.use('/api/admin', adminRoutes);
+
+// Global error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  
+  // Default error values
+  let error = { ...err };
+  error.message = err.message;
+
+  // Mongoose bad ObjectId
+  if (err.name === 'CastError') {
+    const message = 'Resource not found';
+    error = { message, statusCode: 404 };
+  }
+
+  // Mongoose duplicate key
+  if (err.code === 11000) {
+    const message = 'Duplicate field value entered';
+    error = { message, statusCode: 400 };
+  }
+
+  // Mongoose validation error
+  if (err.name === 'ValidationError') {
+    const message = Object.values(err.errors).map(val => val.message);
+    error = { message, statusCode: 400 };
+  }
+
+  res.status(error.statusCode || 500).json({
+    success: false,
+    message: error.message || 'Server Error'
+  });
+});
 
 const PORT = process.env.PORT || 5000;
 

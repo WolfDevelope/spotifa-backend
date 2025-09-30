@@ -11,7 +11,8 @@
     "dev": "nodemon server.js",
     "migrate": "node scripts/migrateData.js",
     "seed": "npm run migrate",
-    "client": "npm start --prefix ../spotifa-frontend"
+    "client": "npm start --prefix ../spotifa-frontend",
+    "create-admin": "node scripts/createAdmin.js"
   },
   "keywords": [],
   "author": "",
