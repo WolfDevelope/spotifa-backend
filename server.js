@@ -33,7 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // CORS configuration
 const corsOptions = {
-  origin: 'http://localhost:5173', // Your frontend URL
+  origin: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174'], // Multiple frontend URLs
   credentials: true, // Allow credentials (cookies, authorization headers)
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -54,6 +54,7 @@ import albumRoutes from './routes/album.routes.js';
 import artistRoutes from './routes/artist.routes.js';
 import playlistRoutes from './routes/playlist.routes.js';
 import userRoutes from './routes/user.routes.js';
+import musicRoutes from './routes/music.js';
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -62,6 +63,7 @@ app.use('/api/albums', albumRoutes);
 app.use('/api/artists', artistRoutes);
 app.use('/api/playlists', playlistRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/music', musicRoutes);
 
 const PORT = process.env.PORT || 5000;
 
