@@ -12,7 +12,8 @@
     "migrate": "node scripts/migrateData.js",
     "seed": "npm run migrate",
     "client": "npm start --prefix ../spotifa-frontend",
-    "create-admin": "node scripts/createAdmin.js"
+    "create-admin": "node scripts/createAdmin.js",
+    "add-lyrics": "node scripts/addLyricsToSongs.js"
   },
   "keywords": [],
   "author": "",

@@ -277,8 +277,12 @@ export const getAllAlbums = async (req, res) => {
 // @access Private/Admin
 export const createAlbum = async (req, res) => {
   try {
+    console.log('💿 Creating album with data:', req.body);
+    
     const album = await Album.create(req.body);
     await album.populate('artist', 'name avatar');
+
+    console.log('💿 Album created successfully:', album._id);
 
     res.status(201).json({
       success: true,
@@ -286,8 +290,23 @@ export const createAlbum = async (req, res) => {
       message: 'Album created successfully'
     });
   } catch (error) {
-    console.error('Create album error:', error);
-    res.status(500).json({ success: false, message: 'Server error' });
+    console.error('💿 Create album error:', error);
+    
+    // More detailed error handling
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Validation error',
+        errors: validationErrors
+      });
+    }
+    
+    res.status(500).json({ 
+      success: false, 
+      message: 'Server error',
+      error: error.message 
+    });
   }
 };
 

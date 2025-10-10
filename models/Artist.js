@@ -6,7 +6,9 @@ const artistSchema = new mongoose.Schema({
   bio: { type: String },
   songs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song' }],
   albums: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Album' }],
-  followers: { type: Number, default: 0 }
+  followers: { type: Number, default: 0 },
+  genre: {type: String},
+  country: {type: String},
 });
 
 const Artist = mongoose.model('Artist', artistSchema);
