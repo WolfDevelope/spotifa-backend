@@ -23,11 +23,10 @@ export const uploadSong = async (req, res) => {
       });
     }
 
-    // Create song record
-    const song = new Song({
+    // Prepare song data - handle empty album
+    const songData = {
       title,
       artist,
-      album,
       src: uploadResult.url,
       cloudinary_public_id: uploadResult.public_id,
       cover: req.body.cover || null,
@@ -36,7 +35,15 @@ export const uploadSong = async (req, res) => {
       genre,
       lyrics,
       mediaType: 'audio'
-    });
+    };
+
+    // Only add album if it's not empty
+    if (album && album.trim() !== '') {
+      songData.album = album;
+    }
+
+    // Create song record
+    const song = new Song(songData);
 
     await song.save();
 
