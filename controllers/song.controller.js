@@ -23,23 +23,29 @@ export const uploadSong = async (req, res) => {
       });
     }
 
-    // Prepare song data - handle empty album
+    // Prepare song data - handle empty fields properly
     const songData = {
-      title,
+      title: title || 'Untitled',
       artist,
       src: uploadResult.url,
       cloudinary_public_id: uploadResult.public_id,
       cover: req.body.cover || null,
       duration: duration || '3:45',
-      durationSec: durationSec || 225,
-      genre,
-      lyrics,
+      durationSec: parseInt(durationSec) || 225,
       mediaType: 'audio'
     };
 
-    // Only add album if it's not empty
-    if (album && album.trim() !== '') {
+    // Only add optional fields if they have values
+    if (album && album.trim() !== '' && album !== 'undefined') {
       songData.album = album;
+    }
+    
+    if (genre && genre.trim() !== '') {
+      songData.genre = genre;
+    }
+    
+    if (lyrics && lyrics.trim() !== '') {
+      songData.lyrics = lyrics;
     }
 
     // Create song record
@@ -55,9 +61,13 @@ export const uploadSong = async (req, res) => {
 
   } catch (error) {
     console.error('Upload song error:', error);
+    console.error('Error details:', error.message);
+    console.error('Request body:', req.body);
+    
     res.status(500).json({
       success: false,
-      message: 'Server error during upload'
+      message: error.message || 'Server error during upload',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 };
