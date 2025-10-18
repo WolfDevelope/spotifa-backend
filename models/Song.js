@@ -7,6 +7,7 @@ const songSchema = new mongoose.Schema({
   album: { type: mongoose.Schema.Types.ObjectId, ref: 'Album' },
   cover: { type: String },
   src: { type: String },
+  cloudinary_public_id: { type: String }, // For Cloudinary file management
   duration: { type: String, required: true },
   durationSec: { type: Number, required: true },
   mediaType: { type: String, default: 'audio' },

@@ -10,6 +10,9 @@
     "server": "nodemon server.js",
     "dev": "nodemon server.js",
     "migrate": "node scripts/migrateData.js",
+    "migrate-cloudinary": "node scripts/migrateToCloudinary.js",
+    "update-cloudinary": "node scripts/updateSongsToCloudinary.js",
+    "test-cloudinary": "node scripts/testCloudinaryUpload.js",
     "seed": "npm run migrate",
     "client": "npm start --prefix ../spotifa-frontend",
     "create-admin": "node scripts/createAdmin.js",
@@ -21,6 +24,7 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.7.0",
     "concurrently": "^9.2.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
@@ -29,6 +33,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.0",
     "multer": "^2.0.2",
+    "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^7.0.6",
     "pug": "^3.0.3"
   },

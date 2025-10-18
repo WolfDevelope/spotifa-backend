@@ -1,9 +1,13 @@
 import express from 'express';
-import { getAllSongs, getSongById, createSong, updateSong, deleteSong } from '../controllers/song.controller.js';
+import { getAllSongs, getSongById, createSong, updateSong, deleteSong, uploadSong } from '../controllers/song.controller.js';
 import { protect, admin } from '../middlewares/auth.js';
 import upload from '../middlewares/upload.js';
+import { upload as cloudinaryUpload } from '../config/cloudinary.js';
 
 const router = express.Router();
+
+// Upload song to Cloudinary (single file upload)
+router.post('/upload', protect, admin, cloudinaryUpload.single('song'), uploadSong);
 
 router.route('/')
   .get(getAllSongs)
