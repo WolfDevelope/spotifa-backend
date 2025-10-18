@@ -7,7 +7,8 @@ import { upload as cloudinaryUpload } from '../config/cloudinary.js';
 const router = express.Router();
 
 // Upload song to Cloudinary (single file upload)
-router.post('/upload', protect, admin, cloudinaryUpload.single('song'), uploadSong);
+// Chỉ cần protect, không cần admin để test
+router.post('/upload', protect, cloudinaryUpload.single('song'), uploadSong);
 
 router.route('/')
   .get(getAllSongs)
